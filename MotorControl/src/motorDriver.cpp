@@ -58,4 +58,8 @@ namespace driver{
         }
     }
 
+    int getEncoder() {
+        return mCounter;
+    }
+
 }
