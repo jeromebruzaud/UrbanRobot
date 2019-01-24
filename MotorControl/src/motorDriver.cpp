@@ -43,7 +43,7 @@ namespace driver{
             *this.stop();
             *this.direction(FORWARD);
         } else {
-            int direction = (mPwm_value > 0 ? 1 : -1); // direction is -1 or +1
+            int direction = (mPwm_value > 0 ? FORWARD : BACKWARD); // direction is -1 or +1
             if (direction != mDirection) {
                 *this.stop();
                 *this.direction(direction);
@@ -61,10 +61,10 @@ namespace driver{
          * 0 = emergency stop
          * +1 = forward
          */
-        if (direction == -1) {
+        if (direction == BACKWARD) {
             digitalWrite(mBridge1, HIGH);
             digitalWrite(mBridge2, LOW);
-        } else if (direction == 1) {
+        } else if (direction == FORWARD) {
             digitalWrite(mBridge1, LOW);
             digitalWrite(mBridge2, HIGH);
         } else {
