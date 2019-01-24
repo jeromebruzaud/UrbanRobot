@@ -23,13 +23,13 @@ namespace driver{
         unsigned int mEncoder2; // pin for encoder 2
 
         void rotate(unsigned int pwm_value); // method to apply pwm
+        void direction(int direction);
+        void encoderChange();
 
     public:
         motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2);
-        void encoderChange();
         void run(float pwm_value);
         void stop();
-        void direction(int direction);
         int getEncoder();
     }
 }
