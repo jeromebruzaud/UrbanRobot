@@ -5,37 +5,48 @@
 #include "multiMotor.h"
 namespace driver{
 
-    multiMotor::multiMotor(motorDriver m1, motorDriver m2, motorDriver m3, motorDriver m4, motorDriver m5, motorDriver m6) : mMotor1(m1), mMotor2(m2), mMotor3(m3), mMotor4(m4), mMotor5(m5), mMotor6(m6){
+    multiMotor::multiMotor(motorDriver *m0, motorDriver *m1, motorDriver *m2, motorDriver *m3, motorDriver *m4, motorDriver *m5) {
+        mMotors[0] = m0;
+        mMotors[1] = m1;
+        mMotors[2] = m2;
+        mMotors[3] = m3;
+        mMotors[4] = m4;
+        mMotors[5] = m5;
         stop();
     }
 
-    void multiMotor::setSpeed(float s1, float s2, float s3, float s4, float s5, float s6){
-        mMotor1.run(s1);
-        mMotor2.run(s2);
-        mMotor3.run(s3);
-        mMotor4.run(s4);
-        mMotor5.run(s5);
-        mMotor6.run(s6);
+    multiMotor::multiMotor(motorDriver *motors[6]){
+        for (int i = 0; i < 6; ++i) {
+            mMotors[i] = motors[i];
+        }
+        stop();
+    }
+
+    void multiMotor::setSpeed(float s0, float s1, float s2, float s3, float s4, float s5){
+        mMotors[0]->run(s0);
+        mMotors[1]->run(s1);
+        mMotors[2]->run(s2);
+        mMotors[3]->run(s3);
+        mMotors[4]->run(s4);
+        mMotors[5]->run(s5);
+    }
+
+    void multiMotor::setSpeed(float s[6]){
+        for (int i = 0; i < 6; ++i) {
+            mMotors[i]->run(s[i]);
+        }
     }
 
     void multiMotor::stop(){
-        mMotor1.run(0);
-        mMotor2.run(0);
-        mMotor3.run(0);
-        mMotor4.run(0);
-        mMotor5.run(0);
-        mMotor6.run(0);
+        float speed[6] = {0.0};
+        setSpeed(speed);
     }
 
-    // int[] getEncoder() {
-    //     int[] counters = {mMotor1.getEncoder(),
-    //                       mMotor2.getEncoder(),
-    //                       mMotor3.getEncoder(),
-    //                       mMotor4.getEncoder(),
-    //                       mMotor5.getEncoder(),
-    //                       mMotor6.getEncoder()};
-
-    //     return counters;
-    // }
-
+    float *multiMotor::getSpeeds(){
+        float speeds[6];
+        for (int i = 0; i < 6; i++) {
+            speeds[i] = mMotors[i]->getSpeed();
+        }
+        return speeds;
+    }
 }

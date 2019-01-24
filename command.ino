@@ -1,13 +1,4 @@
 #include <Arduino.h>
-
-
-
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include <WProgram.h>
-#endif
-
 #include <multiMotor.h>
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
@@ -56,39 +47,62 @@
 #define en3L2 28
 #define en3R2 29
 
+#define GEARRATIO 50
+#define ENCODERRES 16
+
 ros::NodeHandle  nh;
 
-motorDriver m1L;
-motorDriver m1R;
-motorDriver m2L;
-motorDriver m2R;
-motorDriver m3L;
-motorDriver m3R;
-multiMotor robotMotors;
+driver::motorDriver m1L(bridge1pwmL, bridge1in1, bridge1in2, en1L, en1L2, GEARRATIO, ENCODERRES);
+driver::motorDriver m1R(bridge1pwmR, bridge1in3, bridge1in4, en1R, en1R2, GEARRATIO, ENCODERRES);
+driver::motorDriver m2L(bridge2pwmL, bridge2in1, bridge2in2, en2L, en2L2, GEARRATIO, ENCODERRES);
+driver::motorDriver m2R(bridge2pwmR, bridge2in3, bridge2in4, en2R, en2R2, GEARRATIO, ENCODERRES);
+driver::motorDriver m3L(bridge3pwmL, bridge3in1, bridge3in2, en3L, en3L2, GEARRATIO, ENCODERRES);
+driver::motorDriver m3R(bridge3pwmR, bridge3in3, bridge3in4, en3R, en3R2, GEARRATIO, ENCODERRES);
+
+driver::multiMotor robotMotors(&m1L, &m1R, &m2L, &m2R, &m3L, &m3R);
 
 
-void robot_command( const std_msgs::Twist& cmd_msg){
+void robot_command( const geometry_msgs::Twist& cmd_msg){
     float speed = (float) cmd_msg.linear.x;
     robotMotors.setSpeed(speed, speed, speed, speed, speed, speed);
 }
 
-ros::Subscriber<std_msgs::Twist> sub("cmd_vel", robot_command);
+ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", robot_command);
 
 void setup() {
-    m1L; = new motorDriver(bridge1pwmL, bridge1in1, bridge1in2, en1L, en1L2);
-    m1R; = new motorDriver(bridge1pwmR, bridge1in3, bridge1in4, en1R, en1R2);
-    m2L; = new motorDriver(bridge2pwmL, bridge2in1, bridge2in2, en2L, en2L2);
-    m2R; = new motorDriver(bridge2pwmR, bridge2in3, bridge2in4, en2R, en2R2);
-    m3L; = new motorDriver(bridge3pwmL, bridge3in1, bridge3in2, en3L, en3L2);
-    m3R; = new motorDriver(bridge3pwmR, bridge3in3, bridge3in4, en3R, en3R2);
-
-    robotMotors = new multiMotor(m1L, m1R, m2L, m2R, m3L, m3R);
-
     nh.initNode();
     nh.subscribe(sub);
+
+    // interrupt for encoders
+    attachInterrupt(digitalPinToInterrupt(en1L), en1LtoInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(en1R), en1RtoInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(en2L), en2LtoInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(en2R), en2RtoInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(en3L), en3LtoInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(en3R), en3RtoInterrupt, CHANGE);
 }
 
 void loop() {
     nh.spinOnce();
     delay(1);
+}
+
+// Manage Interrupt from encoders
+void en1LtoInterrupt() {
+    m1L.encoderChange();
+}
+void en1RtoInterrupt() {
+    m1R.encoderChange();
+}
+void en2LtoInterrupt() {
+    m2L.encoderChange();
+}
+void en2RtoInterrupt() {
+    m2L.encoderChange();
+}
+void en3LtoInterrupt() {
+    m3L.encoderChange();
+}
+void en3RtoInterrupt() {
+    m3R.encoderChange();
 }

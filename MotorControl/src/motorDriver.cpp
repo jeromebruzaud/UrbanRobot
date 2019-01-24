@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace driver{
-    motorDriver::motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2) : mPwm(pwm), mBridge1(bridge1), mBridge2(bridge2), mEncoder1(encoder1), mEncoder2(encoder2), mCounter(0){
+    motorDriver::motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2, unsigned int gearRatio, unsigned int encoder_res) : mPwm(pwm), mBridge1(bridge1), mBridge2(bridge2), mEncoder1(encoder1), mEncoder2(encoder2), mGearRatio(gearRatio), mEncoderRes(encoder_res){
         //PWM
         pinMode(mPwm, OUTPUT);
         // H-bridge direction control
@@ -25,11 +25,8 @@ namespace driver{
         digitalWrite(mBridge1, LOW); // set H-bridge to STOP
         digitalWrite(mBridge2, LOW);
 
-        // interrupt for encoders
-        //attachInterrupt(digitalPinToInterrupt(encoder1), encoderChange, CHANGE);
-
-        mCounter = 0;
         mPwm_value = 0;
+        mTimer = millis();
         mDirection = STOP;
     }
 
@@ -41,30 +38,30 @@ namespace driver{
         mPwm_value = max(-1, min(1, pwm_value)); // mPwm_value between -1 and 1
 
         if (mPwm_value == 0) { // if 0, stop the motor and set direction forward
-            this->stop();
+            stop();
         } else {
-            int direction = (mPwm_value > 0 ? FORWARD : BACKWARD); // direction is -1 or +1
-            if (direction != mDirection) {
-                this->stop();
-                this->direction(direction);
+            int dir = (mPwm_value > 0 ? FORWARD : BACKWARD); // direction is -1 or +1
+            if (dir != mDirection) {
+                stop();
+                direction(dir);
             }
-            mDirection = direction;
-            this->rotate((unsigned int)fabs(mPwm_value));
+            mDirection = dir;
+            rotate((unsigned int)fabs(mPwm_value));
         }
 
     }
 
-    void motorDriver::direction(int direction){
+    void motorDriver::direction(int dir){
         /*
          * change motor direction from bridge gate control.
          * -1 = backward
-         * 0 = emergency stop
+         * 0 or else = emergency stop
          * +1 = forward
          */
-        if (direction == BACKWARD) {
+        if (dir == BACKWARD) {
             digitalWrite(mBridge1, HIGH);
             digitalWrite(mBridge2, LOW);
-        } else if (direction == FORWARD) {
+        } else if (dir == FORWARD) {
             digitalWrite(mBridge1, LOW);
             digitalWrite(mBridge2, HIGH);
         } else {
@@ -77,7 +74,7 @@ namespace driver{
         /*
          * Stop the motor by sending a 0 pwm
          */
-        this->rotate(0);
+        rotate(0);
     }
 
     void motorDriver::rotate(unsigned int pwm_value){
@@ -87,25 +84,24 @@ namespace driver{
         delay(30);
     }
 
-    // void motorDriver::encoderChange(){
-    //     /*
-    //      * Method called by an interrupt.
-    //      * Increment the encoder counter if rotating forward
-    //      * Decrement if rotating backward
-    //      */
-    //     if ((digitalRead(mEncoder1) == HIGH and digitalRead(mEncoder2) == HIGH)
-    //         or (digitalRead(mEncoder1) == LOW and digitalRead(mEncoder2) == LOW)) {
-    //         mCounter++;
-    //     } else {
-    //         mCounter--;
-    //     }
-    // }
+    void motorDriver::encoderChange(){
+        /*
+         * Method called by an interrupt.
+         * Increment the encoder counter if rotating forward
+         * Decrement if rotating backward
+         */
+        mSpeed = (float) mGearRatio / ((float) mEncoderRes * (millis() - mTimer));
+        if (digitalRead(mEncoder1) != digitalRead(mEncoder2)) {
+            mSpeed = -mSpeed;
+        }
+        mTimer = millis();
+    }
 
-    // int getEncoder(){
-    //     /*
-    //      * Return the value of the counter
-    //      */
-    //     return mCounter;
-    // }
+    float motorDriver::getSpeed(){
+        /*
+         * Return the value of the counter
+         */
+        return mSpeed;
+    }
 
 }

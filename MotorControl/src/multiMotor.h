@@ -6,23 +6,19 @@
 #define ARDUINO2_MULTIMOTOR_H
 
 #include "motorDriver.h"
-#include "Arduino.h"
 
 namespace driver{
     class multiMotor{
     private:
-        motorDriver mMotor1;
-        motorDriver mMotor2;
-        motorDriver mMotor3;
-        motorDriver mMotor4;
-        motorDriver mMotor5;
-        motorDriver mMotor6;
+        motorDriver *mMotors[6];
 
     public:
-        multiMotor(motorDriver m1, motorDriver m2, motorDriver m3, motorDriver m4, motorDriver m5, motorDriver m6);
-        void setSpeed(float s1, float s2, float s3, float s4, float s5, float s6);
+        multiMotor(motorDriver *m0, motorDriver *m1, motorDriver *m2, motorDriver *m3, motorDriver *m4, motorDriver *m5);
+        multiMotor(motorDriver *motors[6]);
+        void setSpeed(float s0, float s1, float s2, float s3, float s4, float s5);
+        void setSpeed(float s[6]);
         void stop();
-        //int[] getEncoders();
+        float *getSpeeds();
 
     };
 }

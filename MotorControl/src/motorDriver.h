@@ -14,7 +14,6 @@ namespace driver{
   */
     class motorDriver{
     private:
-        volatile int mCounter;
         int mPwm_value; // pwm value between -1 and +1
         int mDirection; // direction of the motor, -1 or +1
 
@@ -24,15 +23,21 @@ namespace driver{
         unsigned int mEncoder1; // pin for encoder 1
         unsigned int mEncoder2; // pin for encoder 2
 
+        volatile unsigned long mTimer; // timer to calculate rotation speed
+        volatile float mSpeed;
+        unsigned int mGearRatio;
+        unsigned int mEncoderRes;
+
         void rotate(unsigned int pwm_value); // method to apply pwm
         void direction(int direction);
         //void encoderChange();
 
     public:
-        motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2);
+        motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2, unsigned int gearRatio, unsigned int encoder_res);
+        void encoderChange();
         void run(float pwm_value);
         void stop();
-        //int getEncoder();
+        float getSpeed();
     };
 }
 
