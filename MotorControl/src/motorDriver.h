@@ -5,6 +5,8 @@
 #ifndef ARDUINO_MOTORDRIVER_H
 #define ARDUINO_MOTORDRIVER_H
 
+#include <Arduino.h>
+
 namespace driver{
  /*
   * This class control a DC motor. You can change the direction and apply a pwm to it. Speed must be given between -1
@@ -24,14 +26,14 @@ namespace driver{
 
         void rotate(unsigned int pwm_value); // method to apply pwm
         void direction(int direction);
-        void encoderChange();
+        //void encoderChange();
 
     public:
         motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2);
         void run(float pwm_value);
         void stop();
-        int getEncoder();
-    }
+        //int getEncoder();
+    };
 }
 
 #endif //ARDUINO_MOTORDRIVER_H

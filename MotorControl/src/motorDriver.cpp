@@ -2,7 +2,7 @@
 // Created by larnal on 23/01/19.
 //
 
-#include "../include/motorDriver.h"
+#include "motorDriver.h"
 
 #define FORWARD 1
 #define BACKWARD -1
@@ -26,7 +26,7 @@ namespace driver{
         digitalWrite(mBridge2, LOW);
 
         // interrupt for encoders
-        attachInterrupt(digitalPinToInterrupt(encoder1), encoderChange, CHANGE);
+        //attachInterrupt(digitalPinToInterrupt(encoder1), encoderChange, CHANGE);
 
         mCounter = 0;
         mPwm_value = 0;
@@ -41,15 +41,15 @@ namespace driver{
         mPwm_value = max(-1, min(1, pwm_value)); // mPwm_value between -1 and 1
 
         if (mPwm_value == 0) { // if 0, stop the motor and set direction forward
-            *this.stop();
+            this->stop();
         } else {
             int direction = (mPwm_value > 0 ? FORWARD : BACKWARD); // direction is -1 or +1
             if (direction != mDirection) {
-                *this.stop();
-                *this.direction(direction);
+                this->stop();
+                this->direction(direction);
             }
             mDirection = direction;
-            *this.rotate((unsigned int)fabs(mPwm_value));
+            this->rotate((unsigned int)fabs(mPwm_value));
         }
 
     }
@@ -77,35 +77,35 @@ namespace driver{
         /*
          * Stop the motor by sending a 0 pwm
          */
-        *this.rotate(0);
+        this->rotate(0);
     }
 
     void motorDriver::rotate(unsigned int pwm_value){
         // apply a pwm.
-        pwm_value = map(pwm_value, 0, 1, 0, 255)
+        pwm_value = map(pwm_value, 0, 1, 0, 255);
         analogWrite(mPwm, pwm_value);
         delay(30);
     }
 
-    void motorDriver::encoderChange(){
-        /*
-         * Method called by an interrupt.
-         * Increment the encoder counter if rotating forward
-         * Decrement if rotating backward
-         */
-        if ((digitalRead(mEncoder1) == HIGH and digitalRead(mEncoder2) == HIGH)
-            or (digitalRead(mEncoder1) == LOW and digitalRead(mEncoder2) == LOW)) {
-            mCounter++;
-        } else {
-            mCounter--;
-        }
-    }
+    // void motorDriver::encoderChange(){
+    //     /*
+    //      * Method called by an interrupt.
+    //      * Increment the encoder counter if rotating forward
+    //      * Decrement if rotating backward
+    //      */
+    //     if ((digitalRead(mEncoder1) == HIGH and digitalRead(mEncoder2) == HIGH)
+    //         or (digitalRead(mEncoder1) == LOW and digitalRead(mEncoder2) == LOW)) {
+    //         mCounter++;
+    //     } else {
+    //         mCounter--;
+    //     }
+    // }
 
-    int getEncoder(){
-        /*
-         * Return the value of the counter
-         */
-        return mCounter;
-    }
+    // int getEncoder(){
+    //     /*
+    //      * Return the value of the counter
+    //      */
+    //     return mCounter;
+    // }
 
 }

@@ -20,9 +20,9 @@ namespace driver{
 
     public:
         multiMotor(motorDriver m1, motorDriver m2, motorDriver m3, motorDriver m4, motorDriver m5, motorDriver m6);
-        void setSpeed(float s1, float s2, float s3, float s4, float s5, float s6)
+        void setSpeed(float s1, float s2, float s3, float s4, float s5, float s6);
         void stop();
-        int[] getEncoders();
+        //int[] getEncoders();
 
     };
 }

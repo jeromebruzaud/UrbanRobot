@@ -6,8 +6,6 @@
 namespace driver{
 
     multiMotor::multiMotor(motorDriver m1, motorDriver m2, motorDriver m3, motorDriver m4, motorDriver m5, motorDriver m6) : mMotor1(m1), mMotor2(m2), mMotor3(m3), mMotor4(m4), mMotor5(m5), mMotor6(m6){
-        mSpeed = 0;
-        mAngular_speed = 0;
         stop();
     }
 
@@ -29,15 +27,15 @@ namespace driver{
         mMotor6.run(0);
     }
 
-    int[] getEncoder() {
-        int[] counters = {mMotor1.getEncoder(),
-                          mMotor2.getEncoder(),
-                          mMotor3.getEncoder(),
-                          mMotor4.getEncoder(),
-                          mMotor5.getEncoder(),
-                          mMotor6.getEncoder()};
+    // int[] getEncoder() {
+    //     int[] counters = {mMotor1.getEncoder(),
+    //                       mMotor2.getEncoder(),
+    //                       mMotor3.getEncoder(),
+    //                       mMotor4.getEncoder(),
+    //                       mMotor5.getEncoder(),
+    //                       mMotor6.getEncoder()};
 
-        return counters;
-    }
+    //     return counters;
+    // }
 
 }
