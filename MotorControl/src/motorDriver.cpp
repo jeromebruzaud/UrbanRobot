@@ -4,6 +4,9 @@
 
 #include "../include/motorDriver.h"
 
+#define FORWARD 1
+#define BACKWARD -1
+
 using namespace std;
 
 namespace driver{
@@ -25,27 +28,39 @@ namespace driver{
         attachInterrupt(digitalPinToInterrupt(encoder1), encoderChange, CHANGE);
 
         mCounter = 0;
+        mPwm_value = 0;
+        mDirection = 0;
     }
 
-    void motorDriver::encoderChange(){
-        if ((digitalRead(mEncoder1) == HIGH and digitalRead(mEncoder2) == HIGH)
-            or (digitalRead(mEncoder1) == LOW and digitalRead(mEncoder2) == LOW)) {
-            mCounter++;
+    void motorDriver::run(int pwm_value){
+        /* Make the motor run or stop if pwm_value is 0.
+         * pwm_value must be given between -1 and 1, -1 is maximum speed backward and 1 maximum speed forward. 0 means
+         * you stop the motor.
+         */
+        mPwm_value = max(-1, min(1, pwm_value)); // mPwm_value between -1 and 1
+
+        if (mPwm_value == 0) { // if 0, stop the motor and set direction forward
+            *this.stop();
+            *this.direction(FORWARD);
         } else {
-            mCounter--;
+            int direction = (int) (mPwm_value / fabs(mPwm_value)); // direction is -1 or +1
+            if (direction = !mDirection) {
+                *this.stop();
+                *this.direction(direction);
+            }
+            mDirection = direction;
+            *this.rotate(fabs(mPwm_value));
         }
-    }
 
-    void motorDriver::run(unsigned int pwm_value){
-        pwm_value = max(pwm_value, 255)
-        analogWrite(mPwm, pwm_value);
-    }
-
-    void motorDriver::stop(){
-        analogWrite(mPwm, 0);
     }
 
     void motorDriver::direction(int direction){
+        /*
+         * change motor direction from bridge gate control.
+         * -1 = backward
+         * 0 = emergency stop
+         * +1 = forward
+         */
         if (direction == -1) {
             digitalWrite(mBridge1, HIGH);
             digitalWrite(mBridge2, LOW);
@@ -58,7 +73,37 @@ namespace driver{
         }
     }
 
-    int getEncoder() {
+    void motorDriver::stop(){
+        /*
+         * Stop the motor by sending a 0 pwm
+         */
+        *this.rotate(0);
+    }
+
+    void motorDriver::rotate(unsigned int pwm_value){
+        // apply a pwm.
+        analogWrite(mPwm, pwm_value);
+        delay(30);
+    }
+
+    void motorDriver::encoderChange(){
+        /*
+         * Method called by an interrupt.
+         * Increment the encoder counter if rotating forward
+         * Decrement if rotating backward
+         */
+        if ((digitalRead(mEncoder1) == HIGH and digitalRead(mEncoder2) == HIGH)
+            or (digitalRead(mEncoder1) == LOW and digitalRead(mEncoder2) == LOW)) {
+            mCounter++;
+        } else {
+            mCounter--;
+        }
+    }
+
+    int getEncoder(){
+        /*
+         * Return the value of the counter
+         */
         return mCounter;
     }
 
