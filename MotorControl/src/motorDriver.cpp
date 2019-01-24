@@ -6,6 +6,7 @@
 
 #define FORWARD 1
 #define BACKWARD -1
+#define STOP 0
 
 using namespace std;
 
@@ -29,7 +30,7 @@ namespace driver{
 
         mCounter = 0;
         mPwm_value = 0;
-        mDirection = 0;
+        mDirection = STOP;
     }
 
     void motorDriver::run(int pwm_value){
