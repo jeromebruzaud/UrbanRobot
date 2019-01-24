@@ -4,7 +4,7 @@ set(PROJECT_NAME Arduino2)
 project(${PROJECT_NAME})
 
 ##add_executable(${PROJECT_NAME} "${CMAKE_CURRENT_LIST_DIR}/motorDriver.cpp")
-set(${CMAKE_PROJECT_NAME}_SKETCH test.ino)
+set(${CMAKE_PROJECT_NAME}_SKETCH command.ino)
 
 #### Uncomment below additional settings as needed.
 set(${CMAKE_PROJECT_NAME}_BOARD mega)
