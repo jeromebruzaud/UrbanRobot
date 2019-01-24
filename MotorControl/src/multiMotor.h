@@ -17,16 +17,10 @@ namespace driver{
         motorDriver mMotor4;
         motorDriver mMotor5;
         motorDriver mMotor6;
-        double mSpeed;
-        double mAngular_speed;
 
     public:
         multiMotor(motorDriver m1, motorDriver m2, motorDriver m3, motorDriver m4, motorDriver m5, motorDriver m6);
-        void forward();
-        void backward();
-        void speed(double speed);
-        void turnLeft();
-        void turnRight();
+        void setSpeed(float s1, float s2, float s3, float s4, float s5, float s6)
         void stop();
         int[] getEncoders();
 

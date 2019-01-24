@@ -11,54 +11,13 @@ namespace driver{
         stop();
     }
 
-    void multiMotor::forward(){
-        mMotor1.direction(1);
-        mMotor2.direction(1);
-        mMotor3.direction(1);
-        mMotor4.direction(1);
-        mMotor5.direction(1);
-        mMotor6.direction(1);
-
-    }
-
-    void multiMotor::backward(){
-        mMotor1.direction(-1);
-        mMotor2.direction(-1);
-        mMotor3.direction(-1);
-        mMotor4.direction(-1);
-        mMotor5.direction(-1);
-        mMotor6.direction(-1);
-    }
-
-    void multiMotor::turnLeft(){
-        stop();
-        mMotor2.direction(-1);
-        mMotor4.direction(-1);
-        mMotor6.direction(-1);
-        mMotor1.direction(1);
-        mMotor3.direction(1);
-        mMotor5.direction(1);
-    }
-
-    void multiMotor::turnRight(){
-        stop();
-        mMotor2.direction(1);
-        mMotor4.direction(1);
-        mMotor6.direction(1);
-        mMotor1.direction(-1);
-        mMotor3.direction(-1);
-        mMotor5.direction(-1);
-    }
-
-    void multiMotor::speed(double speed){
-        mSpeed = speed; // not used yet
-        unsigned int pwm = (unsigned int) map(speed, 0, 1, 0, 255);
-        mMotor1.run(pwm);
-        mMotor2.run(pwm);
-        mMotor3.run(pwm);
-        mMotor4.run(pwm);
-        mMotor5.run(pwm);
-        mMotor6.run(pwm);
+    void multiMotor::setSpeed(float s1, float s2, float s3, float s4, float s5, float s6){
+        mMotor1.run(s1);
+        mMotor2.run(s2);
+        mMotor3.run(s3);
+        mMotor4.run(s4);
+        mMotor5.run(s5);
+        mMotor6.run(s6);
     }
 
     void multiMotor::stop(){
@@ -68,7 +27,6 @@ namespace driver{
         mMotor4.run(0);
         mMotor5.run(0);
         mMotor6.run(0);
-        forward();
     }
 
     int[] getEncoder() {

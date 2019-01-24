@@ -33,7 +33,7 @@ namespace driver{
         mDirection = STOP;
     }
 
-    void motorDriver::run(int pwm_value){
+    void motorDriver::run(float pwm_value){
         /* Make the motor run or stop if pwm_value is 0.
          * pwm_value must be given between -1 and 1, -1 is maximum speed backward and 1 maximum speed forward. 0 means
          * you stop the motor.
@@ -42,7 +42,6 @@ namespace driver{
 
         if (mPwm_value == 0) { // if 0, stop the motor and set direction forward
             *this.stop();
-            *this.direction(FORWARD);
         } else {
             int direction = (mPwm_value > 0 ? FORWARD : BACKWARD); // direction is -1 or +1
             if (direction != mDirection) {
