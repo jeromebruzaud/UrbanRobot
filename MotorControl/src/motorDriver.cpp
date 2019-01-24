@@ -43,13 +43,13 @@ namespace driver{
             *this.stop();
             *this.direction(FORWARD);
         } else {
-            int direction = (int) (mPwm_value / fabs(mPwm_value)); // direction is -1 or +1
-            if (direction = !mDirection) {
+            int direction = (mPwm_value > 0 ? 1 : -1); // direction is -1 or +1
+            if (direction != mDirection) {
                 *this.stop();
                 *this.direction(direction);
             }
             mDirection = direction;
-            *this.rotate(fabs(mPwm_value));
+            *this.rotate((unsigned int)fabs(mPwm_value));
         }
 
     }
@@ -82,6 +82,7 @@ namespace driver{
 
     void motorDriver::rotate(unsigned int pwm_value){
         // apply a pwm.
+        pwm_value = map(pwm_value, 0, 1, 0, 255)
         analogWrite(mPwm, pwm_value);
         delay(30);
     }
