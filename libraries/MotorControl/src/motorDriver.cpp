@@ -47,7 +47,7 @@ namespace driver{
                 direction(dir);
             }
             mDirection = dir;
-            rotate((unsigned int)fabs(mPwm_value));
+            rotate(fabs(mPwm_value));
         }
 
     }
@@ -60,11 +60,11 @@ namespace driver{
          * +1 = forward
          */
         if (dir == BACKWARD) {
-            digitalWrite(mBridge1, HIGH);
-            digitalWrite(mBridge2, LOW);
-        } else if (dir == FORWARD) {
             digitalWrite(mBridge1, LOW);
             digitalWrite(mBridge2, HIGH);
+        } else if (dir == FORWARD) {
+            digitalWrite(mBridge1, HIGH);
+            digitalWrite(mBridge2, LOW);
         } else {
             digitalWrite(mBridge1, LOW);
             digitalWrite(mBridge2, LOW);
@@ -78,10 +78,10 @@ namespace driver{
         rotate(0);
     }
 
-    void motorDriver::rotate(unsigned int pwm_value){
+    void motorDriver::rotate(float pwm_value){
         // apply a pwm.
-        pwm_value = map(pwm_value, 0, 1, 0, 255);
-        analogWrite(mPwm, pwm_value);
+        unsigned int pwm = (unsigned int) (pwm_value * 255);
+        analogWrite(mPwm, 70);
         delay(30);
     }
 

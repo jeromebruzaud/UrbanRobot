@@ -14,7 +14,7 @@ namespace driver{
   */
     class motorDriver{
     private:
-        int mPwm_value; // pwm value between -1 and +1
+        float mPwm_value; // pwm value between -1 and +1
         int mDirection; // direction of the motor, -1 or +1
 
         unsigned int mPwm; // pin for pwm
@@ -28,7 +28,7 @@ namespace driver{
         unsigned int mGearRatio;
         unsigned int mEncoderRes;
 
-        void rotate(unsigned int pwm_value); // method to apply pwm
+        void rotate(float pwm_value); // method to apply pwm
         void direction(int direction);
         //void encoderChange();
 

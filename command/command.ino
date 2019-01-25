@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <multiMotor.h>
 #include <ros.h>
+#include <std_msgs/Float32.h>
 #include <geometry_msgs/Twist.h>
 
 //pin for PWM
@@ -64,23 +65,33 @@ driver::multiMotor robotMotors(&m1L, &m1R, &m2L, &m2R, &m3L, &m3R);
 
 void robot_command( const geometry_msgs::Twist& cmd_msg){
     float speed = (float) cmd_msg.linear.x;
-    robotMotors.setSpeed(speed, speed, speed, speed, speed, speed);
+    if (speed > 0.5) {
+          digitalWrite(13, HIGH-digitalRead(13));   // blink the led
+    }
+    robotMotors.setSpeed(speed,speed,speed,speed,speed,speed);
 }
 
-ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", robot_command);
 
 void setup() {
+    nh.getHardware()->setBaud(115200);
+
+    ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", robot_command);
     nh.initNode();
     nh.subscribe(sub);
     robotMotors.init();
+    pinMode(13, OUTPUT);
+
 
     // interrupt for encoders
-    attachInterrupt(digitalPinToInterrupt(en1L), en1LtoInterrupt, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(en1R), en1RtoInterrupt, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(en2L), en2LtoInterrupt, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(en2R), en2RtoInterrupt, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(en3L), en3LtoInterrupt, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(en3R), en3RtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en1L), en1LtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en1R), en1RtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en2L), en2LtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en2R), en2RtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en3L), en3LtoInterrupt, CHANGE);
+//    attachInterrupt(digitalPinToInterrupt(en3R), en3RtoInterrupt, CHANGE);
+
+
+
 }
 
 void loop() {
