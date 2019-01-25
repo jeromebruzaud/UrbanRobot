@@ -11,7 +11,10 @@
 using namespace std;
 
 namespace driver{
-    motorDriver::motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2, unsigned int gearRatio, unsigned int encoder_res) : mPwm(pwm), mBridge1(bridge1), mBridge2(bridge2), mEncoder1(encoder1), mEncoder2(encoder2), mGearRatio(gearRatio), mEncoderRes(encoder_res){
+    motorDriver::motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2, unsigned int gearRatio, unsigned int encoder_res) : mPwm(pwm), mBridge1(bridge1), mBridge2(bridge2), mEncoder1(encoder1), mEncoder2(encoder2), mGearRatio(gearRatio), mEncoderRes(encoder_res), mPwm_value(0), mDirection(STOP), mTimer(0){
+    }
+
+    void motorDriver::init() {
         //PWM
         pinMode(mPwm, OUTPUT);
         // H-bridge direction control
@@ -25,9 +28,7 @@ namespace driver{
         digitalWrite(mBridge1, LOW); // set H-bridge to STOP
         digitalWrite(mBridge2, LOW);
 
-        mPwm_value = 0;
         mTimer = millis();
-        mDirection = STOP;
     }
 
     void motorDriver::run(float pwm_value){

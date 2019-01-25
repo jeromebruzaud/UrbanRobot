@@ -34,6 +34,7 @@ namespace driver{
 
     public:
         motorDriver(unsigned int pwm, unsigned int bridge1, unsigned int bridge2, unsigned int encoder1, unsigned int encoder2, unsigned int gearRatio, unsigned int encoder_res);
+        void init();
         void encoderChange();
         void run(float pwm_value);
         void stop();

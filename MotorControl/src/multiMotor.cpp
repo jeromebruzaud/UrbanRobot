@@ -12,12 +12,17 @@ namespace driver{
         mMotors[3] = m3;
         mMotors[4] = m4;
         mMotors[5] = m5;
-        stop();
     }
 
     multiMotor::multiMotor(motorDriver *motors[6]){
         for (int i = 0; i < 6; ++i) {
             mMotors[i] = motors[i];
+        }
+    }
+
+    void multiMotor::init() {
+        for (int i = 0; i < 6; ++i) {
+            mMotors[i]->init();
         }
         stop();
     }
