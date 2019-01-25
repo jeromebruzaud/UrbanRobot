@@ -72,6 +72,7 @@ ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", robot_command);
 void setup() {
     nh.initNode();
     nh.subscribe(sub);
+    robotMotors.init();
 
     // interrupt for encoders
     attachInterrupt(digitalPinToInterrupt(en1L), en1LtoInterrupt, CHANGE);
